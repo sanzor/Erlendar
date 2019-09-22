@@ -1,6 +1,6 @@
 -module(event).
 -compile([debug_info]).
--export([event/1]).
+-export([loop/1]).
 
 -record(state,{server,
                name="",
@@ -8,7 +8,7 @@
 
 
 
-event(S=#state{server=Server})->
+loop(S=#state{server=Server})->
     receive
         {Server,Ref,cancel}->
             Server ! {Ref,ok}
