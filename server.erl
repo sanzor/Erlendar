@@ -5,12 +5,11 @@
                 description="",
                 pid,
                 timeout={{1970,1,1}{0,0,0}}
-}
+               }
 ).
 
-
-loop(State)->
-    receive 
+  loop(State)->
+        receive 
         {Pid,MsgRef,{subscribe,Client}}->
             Ref=erlang:monitor(process,Client),
             NewClients=orddict:store(Ref,Client,State#state.clients),
