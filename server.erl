@@ -8,6 +8,25 @@
                }
 ).
 
+start()->
+    register(?MODULE,Pid=spawn(?MODULE,init,[])),
+    Pid.
+start_link()->
+    register(?MODULE,Pid=spawn_link(?MODULE,init,[])),
+    Pid.
+terminate()->
+    ?MODULE ! shutdown.
+subscribe(Pid)->
+    Ref=erlang:monitor(process,Pid),
+    ?MODULE ! {self(),Ref,{subscribe,Pid}},
+    receive 
+        {Ref,ok}->
+            {ok,Ref};
+        {'DOWN',Ref,process,_Pid,reason}->
+            {error,Reason}
+  after 5000 ->
+      {error,timeout}
+end.
   loop(State)->
         receive 
         {Pid,MsgRef,{subscribe,Client}}->
